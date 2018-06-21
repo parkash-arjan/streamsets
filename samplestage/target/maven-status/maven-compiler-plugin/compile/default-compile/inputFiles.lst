@@ -1,0 +1,13 @@
+/home/parkash/dev/streamsets/samplestage/src/main/java/com/example/stage/destination/sample/Groups.java
+/home/parkash/dev/streamsets/samplestage/src/main/java/com/example/stage/executor/sample/Groups.java
+/home/parkash/dev/streamsets/samplestage/src/main/java/com/example/stage/origin/sample/Groups.java
+/home/parkash/dev/streamsets/samplestage/src/main/java/com/example/stage/executor/sample/SampleDExecutor.java
+/home/parkash/dev/streamsets/samplestage/src/main/java/com/example/stage/processor/sample/Groups.java
+/home/parkash/dev/streamsets/samplestage/src/main/java/com/example/stage/processor/sample/SampleProcessor.java
+/home/parkash/dev/streamsets/samplestage/src/main/java/com/example/stage/lib/sample/Errors.java
+/home/parkash/dev/streamsets/samplestage/src/main/java/com/example/stage/destination/sample/SampleTarget.java
+/home/parkash/dev/streamsets/samplestage/src/main/java/com/example/stage/processor/sample/SampleDProcessor.java
+/home/parkash/dev/streamsets/samplestage/src/main/java/com/example/stage/origin/sample/SampleSource.java
+/home/parkash/dev/streamsets/samplestage/src/main/java/com/example/stage/destination/sample/SampleDTarget.java
+/home/parkash/dev/streamsets/samplestage/src/main/java/com/example/stage/executor/sample/SampleExecutor.java
+/home/parkash/dev/streamsets/samplestage/src/main/java/com/example/stage/origin/sample/SampleDSource.java
