@@ -1,4 +1,4 @@
-/home/parkash/dev/streamsets/samplestage/src/test/java/com/example/stage/origin/sample/TestSampleSource.java
-/home/parkash/dev/streamsets/samplestage/src/test/java/com/example/stage/executor/sample/TestSampleExecutor.java
-/home/parkash/dev/streamsets/samplestage/src/test/java/com/example/stage/processor/sample/TestSampleProcessor.java
-/home/parkash/dev/streamsets/samplestage/src/test/java/com/example/stage/destination/sample/TestSampleTarget.java
+/home/parkash/dev/git_repos/streamsets/samplestage/src/test/java/com/example/stage/executor/sample/TestSampleExecutor.java
+/home/parkash/dev/git_repos/streamsets/samplestage/src/test/java/com/example/stage/processor/sample/TestSampleProcessor.java
+/home/parkash/dev/git_repos/streamsets/samplestage/src/test/java/com/example/stage/origin/sample/TestSampleSource.java
+/home/parkash/dev/git_repos/streamsets/samplestage/src/test/java/com/example/stage/destination/sample/TestSampleTarget.java

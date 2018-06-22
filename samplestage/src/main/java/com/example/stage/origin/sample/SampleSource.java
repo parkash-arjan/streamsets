@@ -65,7 +65,7 @@ public abstract class SampleSource extends BaseSource {
   public abstract String getConfig();
 
   
-  private static final String PATH = "/home/parkash/dev/git_repos/spring-profiles/.git";
+  private static final String PATH = "/home/parkash/dev/git_repos/spring-profiles";
   
   
   private Repository repository;
@@ -77,13 +77,21 @@ public abstract class SampleSource extends BaseSource {
     // Validate configuration values and open any required resources.
     List<ConfigIssue> issues = super.init();
 
-    LOG.info("Initialized with config: {}", getConfig());    
-    
-    
-    if (getConfig().equals("invalidValue")) {
+    FileRepositoryBuilder builder = new FileRepositoryBuilder();
+    try {
+      repository = builder
+          .setGitDir(new File(PATH+"/.git"))
+          .setMustExist(true)
+          .build();
+      git = new Git(repository);
+
+      LOG.info("Connected to Git repository at {}", 
+          repository.getDirectory().getAbsolutePath());
+    } catch (IOException e) {
+      LOG.error("Exception building Git repository", e);
       issues.add(
           getContext().createConfigIssue(
-              Groups.SAMPLE.name(), "config", Errors.SAMPLE_00, "Here's what's wrong..."
+              Groups.SAMPLE.name(), "config", Errors.SAMPLE_00, e.getLocalizedMessage()
           )
       );
     }
@@ -95,6 +103,16 @@ public abstract class SampleSource extends BaseSource {
   /** {@inheritDoc} */
   @Override
   public void destroy() {
+	  
+	// Clean up JGit resources.
+	  if (git != null) {
+	    git.close();
+	  }
+	  if (repository != null) {
+	    repository.close();
+	  }
+	  
+	  
     // Clean up any open resources.
     super.destroy();
   }

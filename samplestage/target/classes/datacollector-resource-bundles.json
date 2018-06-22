@@ -1,0 +1,11 @@
+[
+  "com.example.stage.lib.sample.Errors",
+  "com.example.stage.executor.sample.SampleDExecutor",
+  "com.example.stage.processor.sample.SampleDProcessor",
+  "com.example.stage.processor.sample.Groups",
+  "com.example.stage.destination.sample.Groups",
+  "com.example.stage.executor.sample.Groups",
+  "com.example.stage.origin.sample.Groups",
+  "com.example.stage.origin.sample.SampleDSource",
+  "com.example.stage.destination.sample.SampleDTarget"
+]
