@@ -120,29 +120,72 @@ public abstract class SampleSource extends BaseSource {
   /** {@inheritDoc} */
   @Override
   public String produce(String lastSourceOffset, int maxBatchSize, BatchMaker batchMaker) throws StageException {
-    // Offsets can vary depending on the data source. Here we use an integer as an example only.
-    long nextSourceOffset = 0;
-    if (lastSourceOffset != null) {
-      nextSourceOffset = Long.parseLong(lastSourceOffset);
-    }
+	  Iterable<RevCommit> commits;
+	  try {
+	    LogCommand cmd = git.log();
+	    if (lastSourceOffset == null || lastSourceOffset.isEmpty()) {
+	      // Get all commits
+	      cmd.all();
+	    } else {
+	      // Get commits since last offset
+	      cmd.addRange(repository.resolve(lastSourceOffset),
+	          repository.resolve(Constants.HEAD));
+	    }
+	    commits = cmd.call();
+	    // Want oldest commits first, so we tell JGit to reverse the
+	    // default ordering
+	    ((RevWalk)commits).sort(RevSort.REVERSE);
+	  } catch (NoHeadException e) {
+	    // No commits yet. Returning null will stop the pipeline,
+	    // so return an empty string so we wait for commits
+	    return "";
+	  } catch (GitAPIException | IOException e) {
+	    throw new StageException(Errors.SAMPLE_00, e);
+	  }
+	  
+	  String nextSourceOffset = lastSourceOffset;
 
-    int numRecords = 0;
+	// Create records and add to batch
+	int numRecords = 0;
+	Iterator<RevCommit> iter = commits.iterator();
 
-    // TODO: As the developer, implement your logic that reads from a data source in this method.
+	if (!iter.hasNext()) {
+	  // No data to process, but don't tie up the app!
+	  try {
+	    Thread.sleep(1000);
+	  } catch (InterruptedException e) {
+	    LOG.error("Sleep interrupted", e);
+	  }
+	} else {
+	  while (numRecords < maxBatchSize && iter.hasNext()) {
+	    RevCommit commit = iter.next();
+	    String hash = commit.getName();
 
-    // Create records and add to batch. Records must have a string id. This can include the source offset
-    // or other metadata to help uniquely identify the record itself.
-    while (numRecords < maxBatchSize) {
-      Record record = getContext().createRecord("some-id::" + nextSourceOffset);
-      Map<String, Field> map = new HashMap<>();
-      map.put("fieldName", Field.create("Some Value"));
-      record.set(Field.create(map));
-      batchMaker.addRecord(record);
-      ++nextSourceOffset;
-      ++numRecords;
-    }
+	    // Records are identified by the commit hash
+	    Record record = getContext().createRecord("hash::" + hash);
 
-    return String.valueOf(nextSourceOffset);
+	    Map<String, Field> map = new HashMap<>();
+	    map.put("hash", Field.create(hash));
+	    map.put("time", Field.create(commit.getCommitTime()));
+	    map.put("short_message", Field.create(commit.getShortMessage()));
+
+	    PersonIdent committer = commit.getCommitterIdent();
+	    Map<String, Field> committerMap = new HashMap<>();
+	    committerMap.put("name", Field.create(committer.getName()));
+	    committerMap.put("email", Field.create(committer.getEmailAddress()));
+	    map.put("committer", Field.create(committerMap));
+
+	    record.set(Field.create(map));
+
+	    LOG.debug("Adding record for git commit {}: {}", hash, record);
+
+	    batchMaker.addRecord(record);
+	    nextSourceOffset = hash;
+	    ++numRecords;
+	  }
+	}
+
+	return nextSourceOffset;	  
   }
 
 }
